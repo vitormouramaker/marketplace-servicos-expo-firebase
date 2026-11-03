@@ -1,0 +1,38 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Fotos de perfil: leitura pública, escrita só do dono, até 5 MB.
+    match /profile_images/{userId} {
+      allow read: if true;
+      allow write: if signedIn() && request.auth.uid == userId
+                   && (request.resource == null || request.resource.size < 5 * 1024 * 1024);
+    }
+
+    // Imagens do portfólio: leitura pública, escrita só do dono, até 10 MB.
+    match /portfolio_images/{userId}/{imageId} {
+      allow read: if true;
+      allow write: if signedIn() && request.auth.uid == userId
+                   && (request.resource == null || request.resource.size < 10 * 1024 * 1024);
+    }
+
+    // Mídia do chat: a lista de participantes vem do documento da sala no Firestore
+    // (regra entre serviços), e não de metadados enviados pelo próprio cliente.
+    // Em produção, o Firebase pede uma permissão extra no primeiro deploy desta regra.
+    match /chat_media/{chatRoomId}/{fileName} {
+      function isParticipant() {
+        return signedIn() && request.auth.uid in
+          firestore.get(/databases/(default)/documents/chat_rooms/$(chatRoomId)).data.participants;
+      }
+      allow read: if isParticipant();
+      // Criar arquivo novo (sem sobrescrever o de outra pessoa), até 50 MB.
+      allow create: if isParticipant() && request.resource.size < 50 * 1024 * 1024;
+      allow update, delete: if false;
+    }
+  }
+}
