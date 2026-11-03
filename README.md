@@ -4,7 +4,7 @@ App mobile que conecta **quem precisa de um serviço** (contratante) a **profiss
 
 Tudo gira em torno de uma **carteira de moedas**: publicar vaga, destacar, estender o prazo, se candidatar e assinar o Premium custam moedas, que são compradas pelo **Mercado Pago**. A lógica de cobrança roda em **Cloud Functions**, nunca no app.
 
-> **Sobre esta versão:** versão anonimizada de um sistema que construí e que roda em produção para uma empresa; nomes, marca, domínios, conteúdo proprietário e dados foram substituídos por fictícios.
+> **Sobre esta versão:** versão anonimizada de um sistema real que desenvolvi para uma empresa; nomes, marca, domínios, conteúdo proprietário e dados foram substituídos por fictícios.
 
 **English summary:** React Native (Expo SDK 53, Expo Router, TypeScript) service marketplace backed by Firebase: Auth, Firestore with hardened security rules, Storage, and 20+ Cloud Functions (v2) for the coin wallet, job posting, applications, premium subscription, scheduled jobs (quota reset, job expiry, subscription renewal, profile-view aggregation, account cleanup), push notifications via Expo and Mercado Pago Checkout Pro with an idempotent webhook. Runs fully offline against the Firebase Emulator Suite with a demo project (`demo-proconecta`) and a seed script, no Google account needed.
 
